@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import MovieCard from "../components/MovieCard";
+import "./Home.css";
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const movies = [
@@ -23,7 +24,9 @@ const Home = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <button type="submit">Search</button>
+        <button type="submit" className="search-button">
+          Search
+        </button>
       </form>
       <div className="movie-grid">
         {movies.map(
