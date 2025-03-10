@@ -2,7 +2,7 @@ import React from "react";
 
 const MovieCard = ({ movie }) => {
   function handlefav() {
-    alert("clicked");
+    // alert("clicked");
   }
   return (
     <div className="movie-card">
