@@ -1,17 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard";
 import "./Home.css";
+import { searchMovie, getPopularMovies } from "../services/api";
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const movies = [
-    { id: 1, title: "John Wick", release_date: "2020" },
-    { id: 2, title: "Terminator", release_date: "1999" },
-    { id: 3, title: "The Matrix", release_date: "1998" },
-  ];
+  const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoding] = useState(true);
 
-  const handleSearch = (e) => {
+  useEffect(() => {
+    const loadPopularMovies = async () => {
+      try {
+        const popularMovie = await getPopularMovies();
+        setMovies(popularMovie);
+      } catch (err) {
+        console.log(err);
+        setError("failed to load");
+      } finally {
+        setLoding(false);
+      }
+    };
+    loadPopularMovies();
+  }, []);
+
+  const handleSearch = async (e) => {
     e.preventDefault();
-    alert(searchQuery);
+    if (!searchQuery.trim()) return;
+    if (loading) return;
+    setLoding(true);
+    try {
+      const searchresult = await searchMovie(searchQuery);
+      setMovies(searchresult);
+      setError(null);
+    } catch (err) {
+      console.log(err);
+      setError("Failed to search movie..");
+    } finally {
+      setLoding(false);
+    }
   };
 
   return (
@@ -28,14 +54,19 @@ const Home = () => {
           Search
         </button>
       </form>
-      <div className="movie-grid">
-        {movies.map(
-          (movie) =>
-            movie.title.toLowerCase().startsWith(searchQuery) && (
-              <MovieCard movie={movie} key={movie.id} />
-            )
-        )}
-      </div>
+      {error && <div className="error-message">{error}</div>}
+      {loading ? (
+        <div className="loading">Loading...</div>
+      ) : (
+        <div className="movies-grid">
+          {movies.map(
+            (movie) =>
+              movie.title.toLowerCase().startsWith(searchQuery) && (
+                <MovieCard movie={movie} key={movie.id} />
+              )
+          )}
+        </div>
+      )}
     </div>
   );
 };
