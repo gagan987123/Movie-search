@@ -27,7 +27,7 @@ const MovieCard = ({ movie }) => {
           </button>
         </div>
       </div>
-      <div className="movie-info">
+      <div className="movie-info bg-amber-100">
         <h3>{movie.title}</h3>
         <p>{movie.release_date?.split("-")[0]}</p>
       </div>
